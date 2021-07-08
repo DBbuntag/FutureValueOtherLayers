@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FutureValue.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FutureValue.UnitTests", "FutureValue.UnitTests\FutureValue.UnitTests.csproj", "{C8CF8DB2-96FE-416E-A030-07E4085BD94E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FutureValue.API", "FutureValue.API\FutureValue.API.csproj", "{0C40EC05-5E76-46F7-92BE-A7EB9F32FE77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{C8CF8DB2-96FE-416E-A030-07E4085BD94E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8CF8DB2-96FE-416E-A030-07E4085BD94E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8CF8DB2-96FE-416E-A030-07E4085BD94E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C40EC05-5E76-46F7-92BE-A7EB9F32FE77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C40EC05-5E76-46F7-92BE-A7EB9F32FE77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C40EC05-5E76-46F7-92BE-A7EB9F32FE77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C40EC05-5E76-46F7-92BE-A7EB9F32FE77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
