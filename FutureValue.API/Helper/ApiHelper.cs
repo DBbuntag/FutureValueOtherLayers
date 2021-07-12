@@ -8,10 +8,10 @@ namespace FutureValue.API.Helper
     {
         public static HttpClient ApiClient { get; set; }
 
-        public static void InitializeClient()
+        public static void InitializeClient(string url)
         {
             ApiClient = new HttpClient();
-            ApiClient.BaseAddress = new Uri("https://localhost:44362/");
+            ApiClient.BaseAddress = new Uri(url);
             ApiClient.DefaultRequestHeaders.Accept.Clear();
             ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json")); //add headers to get json to parse it with models
         }

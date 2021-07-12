@@ -25,13 +25,20 @@ namespace FutureValue.API.Controllers
         [Authorize]
         public async Task<Object> GetUserProfile()
         {
-            string userId = User.Claims.First(c => c.Type == "UserId").Value;
-            var user = await _userManager.FindByIdAsync(userId);
-
-            return new
+            try
             {
-                user.FullName
-            };
+                string userId = User.Claims.First(c => c.Type == "UserId").Value;
+                var user = await _userManager.FindByIdAsync(userId);
+
+                return new
+                {
+                    user.FullName
+                };
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

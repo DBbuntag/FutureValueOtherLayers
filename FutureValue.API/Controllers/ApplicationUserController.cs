@@ -36,14 +36,21 @@ namespace FutureValue.API.Controllers
         [Route("Register")]
         public async Task<Object> PostApplicationUser(ApplicationUserDto applicationUserDto)
         {
-            var applicationUser = new ApplicationUser
+            try
             {
-                UserName = applicationUserDto.Username,
-                FullName = applicationUserDto.FullName
-            };
+                var applicationUser = new ApplicationUser
+                {
+                    UserName = applicationUserDto.Username,
+                    FullName = applicationUserDto.FullName
+                };
 
-            var result = await _userManager.CreateAsync(applicationUser, applicationUserDto.Password);
-            return Ok(result);
+                var result = await _userManager.CreateAsync(applicationUser, applicationUserDto.Password);
+                return Ok(result);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         //POST: api/ApplicationUser/Login
@@ -51,26 +58,32 @@ namespace FutureValue.API.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login(ApplicationUserDto applicationUserDto)
         {
-            //user manager will be used to check if we have a user with the given credentials
-            var user = await _userManager.FindByNameAsync(applicationUserDto.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, applicationUserDto.Password))
+            try
             {
-                var tokenDescriptor = new SecurityTokenDescriptor
+                //user manager will be used to check if we have a user with the given credentials
+                var user = await _userManager.FindByNameAsync(applicationUserDto.Username);
+                if (user != null && await _userManager.CheckPasswordAsync(user, applicationUserDto.Password))
                 {
-                    Subject = new ClaimsIdentity(new Claim[] {
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(new Claim[] {
                         new Claim("UserId", user.Id.ToString())
                     }),
-                    Expires = DateTime.Now.AddDays(1), //token will be expired after 1 day
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-                };
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-                var token = tokenHandler.WriteToken(securityToken);
-                return Ok(new { token });
+                        Expires = DateTime.Now.AddDays(1), //token will be expired after 1 day
+                        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
+                    };
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+                    var token = tokenHandler.WriteToken(securityToken);
+                    return Ok(new { token });
+                }
+                else
+                    return BadRequest(new { message = "Incorrect Username or Password. " });
             }
-            else
-                return BadRequest(new { message = "Incorrect Username or Password. " });
-
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using FutureValue.API.Helper;
+using FutureValue.API.Model;
 using FutureValue.Application.Dtos;
 using FutureValue.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +20,14 @@ namespace FutureValue.API.Controllers
     {
         readonly IFutureValueQueries _futureValueQueries;
         readonly IFutureValueCommands _futureValueCommands;
+        private readonly ApplicationSettings _applicationSettings;
 
-        public FutureValuesController(IFutureValueQueries futureValueQueries, IFutureValueCommands futureValueCommands)
+        public FutureValuesController(IFutureValueQueries futureValueQueries, IFutureValueCommands futureValueCommands, IOptions<ApplicationSettings> appSettings)
         {
             _futureValueQueries = futureValueQueries;
             _futureValueCommands = futureValueCommands;
-            ApiHelper.InitializeClient();
+            _applicationSettings = appSettings.Value;
+            ApiHelper.InitializeClient(_applicationSettings.API_URL);
         }
 
         [HttpGet]
@@ -33,8 +37,10 @@ namespace FutureValue.API.Controllers
             try
             {
                 var futureValues = await _futureValueQueries.GetPastExecutedValues();
-
-                return Ok(futureValues);
+                if (futureValues != null)
+                    return Ok(futureValues);
+                else
+                    return BadRequest();
             }
             catch (Exception e)
             {
@@ -75,11 +81,18 @@ namespace FutureValue.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FutureValuesDto>> FutureValues(int id)
         {
-            var futureValueDetails = await _futureValueCommands.GetFutureValueDetails(id);
-            if (futureValueDetails == null)
-                return NotFound();
+            try
+            {
+                var futureValueDetails = await _futureValueCommands.GetFutureValueDetails(id);
+                if (futureValueDetails == null)
+                    return NotFound();
 
-            return futureValueDetails;
+                return futureValueDetails;
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

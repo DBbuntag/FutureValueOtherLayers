@@ -9,5 +9,6 @@ namespace FutureValue.API.Model
     {
         public string JWT_Secret { get; set; }
         public string Client_URL { get; set; }
+        public string API_URL { get; set; }
     }
 }

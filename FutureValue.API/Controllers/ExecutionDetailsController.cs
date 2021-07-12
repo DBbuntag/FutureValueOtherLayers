@@ -25,12 +25,19 @@ namespace FutureValue.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetExecutionDetails(int id)
         {
-            var executionDetails = await _executionDetailsQueries.GetExecutionDetailsAsync(id);
+            try
+            {
+                var executionDetails = await _executionDetailsQueries.GetExecutionDetailsAsync(id);
 
-            if (executionDetails.Count == 0)
-                return NotFound();
+                if (executionDetails.Count == 0)
+                    return NotFound();
 
-            return CreatedAtAction("GetExecutionDetails", executionDetails);
+                return CreatedAtAction("GetExecutionDetails", executionDetails);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPost]
